@@ -41,6 +41,7 @@ MODULE_AUTHOR("Conestoga SET");
 static int __init initialize_my_module(void)
 {
         printk(KERN_INFO "module1: Conestoga SET initialize_my_module() called.\n");
+	printk(KERN_INFO "This is a test\n");
         return 0;
 }
 
