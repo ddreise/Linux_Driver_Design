@@ -110,7 +110,11 @@ static int kmembuff_release(struct inode *inode, struct file *filep) //Routine f
 //Driver Requirement 5: Module Write Routine.  Mapped to the native write() function call for sending data into the target device
 static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
+	
 	printk(KERN_INFO "Writing to the device: %s... \n", buf);
+
+	//write(filep, buf, count);
+	
 	return 1;
 }
 
