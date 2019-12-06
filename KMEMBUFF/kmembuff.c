@@ -24,7 +24,7 @@
 
 // Global variables
 char *pbuf;
-char buffer[BUF_SZ];
+const char buffer[BUF_SZ];
 
 //Prototyping the routines so to prepare for assembling the file_operation struct
 static int kmembuff_open(struct inode *inode, struct file *filep);
@@ -101,11 +101,11 @@ static int kmembuff_open(struct inode *inode, struct file *filep) //Routine for 
 {
 	printk(KERN_INFO "Device Opened... \n");
 
-	// Clear buffer
-	strcpy(buffer, "");
+	//Clear buffer
+	//strcpy((char*)pbuf, "");
 
 	// Point buffer to allocated memory
-	pbuf = buffer;
+	//pbuf = buffer;
 	return 0;
 }
 
@@ -119,16 +119,23 @@ static int kmembuff_release(struct inode *inode, struct file *filep) //Routine f
 //Driver Requirement 5: Module Write Routine.  Mapped to the native write() function call for sending data into the target device
 static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
-	char tmp[BUF_SZ];	
+	
+	int i;
 
 	printk(KERN_INFO "Writing to the device: %s... \n", buf);
+	
+	for (i = 0; i < (BUF_SZ - 1); i++){
+		pbuf[i] = buf[i];
+	}
+	pbuf[BUF_SZ] = '\n';
+	
 
 	// Write to buffer
-	sprintf(tmp, "This is a test");
-	strcat(buffer, tmp);	
+	//sprintf(tmp, "This is a test");
+	//strcat(buffer, tmp);	
 
 	// Point buffer to allocated memory
-	pbuf = buffer;
+	//pbuf = buffer;
 
 	
 
@@ -141,15 +148,15 @@ static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count,
 //Driver Requirement 6: Module Read Routine.  Mapped to the native read() function call for receiving data from the target device.
 static ssize_t kmembuff_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
-	int curr_length;	
+	//int curr_length;	
 	
 	printk(KERN_INFO "Reading from the device: %s... \n", buf);
 
-	curr_length = strlen(pbuf);
+	//curr_length = strlen(pbuf);
 
 	// Send to user space from kernel
-	printk(KERN_INFO "Sending device data to user space...\n");
-	copy_to_user(buf, pbuf, curr_length);
+	//printk(KERN_INFO "Sending device data to user space...\n");
+	//copy_to_user(buf, pbuf, curr_length);
 	return 1;
 }
 

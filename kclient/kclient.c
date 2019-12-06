@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 #define BUF_SZ 128
 
@@ -17,6 +18,9 @@ int main(){
 	fd = open("/dev/kmembuff", O_RDWR);
 	if (!fd) printf("Cannot open module!\n");
 
+	strcpy(buf, "This is a test");
+
+	write(fd, &buf, BUF_SZ);
 	read(fd, &buf, BUF_SZ);
 
 	printf("Printing out contents\n");
