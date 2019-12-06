@@ -6,7 +6,7 @@
 ifneq (${KERNELRELEASE},)
 	obj-m += kmembuff.o
 else
-	KERNEL_SOURCE := /usr/src/linux-headers-5.0.0-36-generic
+	KERNEL_SOURCE := /usr/src/linux-headers-5.0.0-37-generic
 	PWD := $(shell pwd)
 
 default:

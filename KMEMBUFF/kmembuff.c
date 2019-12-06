@@ -14,6 +14,7 @@
 #include <linux/version.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
+#include <linux/uaccess.h>
 
 //required for using the file_operations struct to register the open/close/read/write routines
 #include <linux/fs.h>
@@ -23,6 +24,7 @@
 
 // Global variables
 char *pbuf;
+char buffer[BUF_SZ];
 
 //Prototyping the routines so to prepare for assembling the file_operation struct
 static int kmembuff_open(struct inode *inode, struct file *filep);
@@ -57,6 +59,7 @@ static int __init init_mod(void)
 	else
 	{
 		printk(KERN_INFO "Test Module Started: %d... \n", result);
+
 		
 		// Buffer memory allocation
 		pbuf = kmalloc(BUF_SZ, GFP_KERNEL);
@@ -67,8 +70,7 @@ static int __init init_mod(void)
 		}
 		else // If memory allocation successful
 		{
-			kfree (pbuf);
-			printk(KERN_INFO "Memory freed\n");
+			printk(KERN_INFO "Memory allocated\n");
 		}
 		
 		return 0;
@@ -90,6 +92,7 @@ static void __exit end_mod(void) //Module Destructor
 	}
 	
 	unregister_chrdev(240, "kmembuff");
+
 	printk(KERN_ALERT "Test Module Ended... \n");
 }
 
@@ -97,6 +100,12 @@ static void __exit end_mod(void) //Module Destructor
 static int kmembuff_open(struct inode *inode, struct file *filep) //Routine for opening the device
 {
 	printk(KERN_INFO "Device Opened... \n");
+
+	// Clear buffer
+	strcpy(buffer, "");
+
+	// Point buffer to allocated memory
+	pbuf = buffer;
 	return 0;
 }
 
@@ -110,8 +119,19 @@ static int kmembuff_release(struct inode *inode, struct file *filep) //Routine f
 //Driver Requirement 5: Module Write Routine.  Mapped to the native write() function call for sending data into the target device
 static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
-	
+	char tmp[BUF_SZ];	
+
 	printk(KERN_INFO "Writing to the device: %s... \n", buf);
+
+	// Write to buffer
+	sprintf(tmp, "This is a test");
+	strcat(buffer, tmp);	
+
+	// Point buffer to allocated memory
+	pbuf = buffer;
+
+	
+
 
 	//write(filep, buf, count);
 	
@@ -121,7 +141,15 @@ static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count,
 //Driver Requirement 6: Module Read Routine.  Mapped to the native read() function call for receiving data from the target device.
 static ssize_t kmembuff_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
+	int curr_length;	
+	
 	printk(KERN_INFO "Reading from the device: %s... \n", buf);
+
+	curr_length = strlen(pbuf);
+
+	// Send to user space from kernel
+	printk(KERN_INFO "Sending device data to user space...\n");
+	copy_to_user(buf, pbuf, curr_length);
 	return 1;
 }
 
