@@ -9,10 +9,22 @@
 int main(){
 
 	int fd = 0;
-	char buf[128] = "This is a test\n";
+	int i = 0;
+	char buf[BUF_SZ];
+
+	printf("Opening module...\n");
 	
 	fd = open("/dev/kmembuff", O_RDWR);
-	write(fd, buf, BUF_SZ);
+	if (!fd) printf("Cannot open module!\n");
+
+	read(fd, &buf, BUF_SZ);
+
+	printf("Printing out contents\n");
+	for(i = 0; i < BUF_SZ; i++){
+		printf("%c", buf[i]);
+	}	 
+
+	printf("\nClosing module... \n");
 	close(fd);
 
 
