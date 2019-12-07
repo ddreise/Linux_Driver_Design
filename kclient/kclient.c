@@ -12,6 +12,7 @@ int main(){
 	int fd = 0;
 	int i = 0;
 	char buf[BUF_SZ];
+	char tmp[BUF_SZ];
 
 	printf("Opening module...\n");
 	
@@ -21,11 +22,12 @@ int main(){
 	strcpy(buf, "This is a test");
 
 	write(fd, &buf, BUF_SZ);
-	read(fd, &buf, BUF_SZ);
+
+	read(fd, &tmp, BUF_SZ);
 
 	printf("Printing out contents\n");
 	for(i = 0; i < BUF_SZ; i++){
-		printf("%c", buf[i]);
+		printf("%c", tmp[i]);
 	}	 
 
 	printf("\nClosing module... \n");

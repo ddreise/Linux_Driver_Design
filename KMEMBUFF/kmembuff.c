@@ -46,6 +46,7 @@ struct file_operations kmembuff_fops =
 static int __init init_mod(void) 
 {
 	int result;
+	int i;
 
 	//The mock character device is created by shell command "mknod -m 0666 /dev/kmembuff c 240 0"
 	// where 240 is the MAJOR, and 0 is the MINOR designator numbers (specifying what type of 
@@ -70,6 +71,7 @@ static int __init init_mod(void)
 		}
 		else // If memory allocation successful
 		{
+			for (i = 0; i < BUF_SZ; i++) pbuf[i] = 0;			
 			printk(KERN_INFO "Memory allocated\n");
 		}
 		
@@ -127,8 +129,11 @@ static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count,
 	for (i = 0; i < (BUF_SZ - 1); i++){
 		pbuf[i] = buf[i];
 	}
+
+
 	pbuf[BUF_SZ] = '\n';
 	
+	printk(KERN_INFO "Written to device: %s... \n", pbuf);
 
 	// Write to buffer
 	//sprintf(tmp, "This is a test");
@@ -150,7 +155,8 @@ static ssize_t kmembuff_read(struct file *filep, char *buf, size_t count, loff_t
 {
 	//int curr_length;	
 	
-	printk(KERN_INFO "Reading from the device: %s... \n", buf);
+	printk(KERN_INFO "Reading from the device: %s... \n", pbuf);
+	buf = pbuf;
 
 	//curr_length = strlen(pbuf);
 
