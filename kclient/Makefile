@@ -1,13 +1,10 @@
 CC		:= gcc
 CFLAGS	:= -g
 
+all: kclient kserver
 
-ifeq ($(OS),Windows_NT)
-EXECUTABLE	:= kclient.exe
-else
-EXECUTABLE	:= kclient
-endif
+kclient: kclient.c
+	$(CC) $(CFLAGS)  kclient.c -o kclient
 
-
-$(EXECUTABLE): kclient.c
-	$(CC) $(CFLAGS)  $^ -o $@
+kserver: kserver.c
+	$(CC) $(CFLAGS) kserver.c -o kserver
