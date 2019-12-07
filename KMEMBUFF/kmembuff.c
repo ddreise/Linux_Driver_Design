@@ -153,16 +153,19 @@ static ssize_t kmembuff_write(struct file *filep, const char *buf, size_t count,
 //Driver Requirement 6: Module Read Routine.  Mapped to the native read() function call for receiving data from the target device.
 static ssize_t kmembuff_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
-	//int curr_length;	
+	int i;	
 	
-	printk(KERN_INFO "Reading from the device: %s... \n", pbuf);
-	buf = pbuf;
+
+	for (i = 0; i < BUF_SZ; i++) buf[i] = pbuf[i];
+
+	printk(KERN_INFO "Reading from the device: %s... \n", buf);
+	
 
 	//curr_length = strlen(pbuf);
 
 	// Send to user space from kernel
 	//printk(KERN_INFO "Sending device data to user space...\n");
-	//copy_to_user(buf, pbuf, curr_length);
+	//copy_to_user(buf, pbuf, BUF_SZ);
 	return 1;
 }
 

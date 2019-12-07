@@ -26,9 +26,10 @@ int main(){
 	read(fd, &tmp, BUF_SZ);
 
 	printf("Printing out contents\n");
-	for(i = 0; i < BUF_SZ; i++){
-		printf("%c", tmp[i]);
-	}	 
+	//for(i = 0; i < BUF_SZ; i++){
+	//	printf("%c", tmp[i]);
+	//}
+	printf("%s", tmp);	 
 
 	printf("\nClosing module... \n");
 	close(fd);
